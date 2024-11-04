@@ -1,0 +1,56 @@
+Auth:
+  handler: src/lambda/auth/auth0Authorizer.handler
+
+# TODO: Configure this function
+GetTodos:
+  handler: src/lambda/http/getTodos.handler
+  events:
+    - http:
+        method: get
+        path: todos
+        cors: true
+        authorizer: Auth
+
+# TODO: Configure this function
+CreateTodo:
+  handler: src/lambda/http/createTodo.handler
+  events:
+    - http:
+        method: post
+        path: todos
+        cors: true
+        authorizer: Auth
+        request:
+          schemas:
+            application/json: ${file(models/create-model.json)}
+# TODO: Configure this function
+UpdateTodo:
+  handler: src/lambda/http/updateTodo.handler
+  events:
+    - http:
+        method: patch
+        path: todos/{todoId}
+        cors: true
+        authorizer: Auth
+        request:
+          schemas:
+            application/json: ${file(models/update-model.json)}
+# TODO: Configure this function
+DeleteTodo:
+  handler: src/lambda/http/deleteTodo.handler
+  events:
+    - http:
+        method: delete
+        path: todos/{todoId}
+        cors: true
+        authorizer: Auth
+
+# TODO: Configure this function
+GenerateUploadUrl:
+  handler: src/lambda/http/generateUploadUrl.handler
+  events:
+    - http:
+        method: post
+        path: todos/{todoId}/attachment
+        authorizer: Auth
+        cors: true

@@ -1,0 +1,40 @@
+name: aws
+runtime: nodejs16.x
+stage: ${opt:stage, 'dev'}
+region: ${opt:region, 'us-east-1'}
+
+tracing:
+  lambda: true
+  apiGateway: true
+
+logs:
+  restApi: true
+
+environment:
+  TODOS_TABLE: mytable-khamma-1201-${self:provider.stage}
+  TODOS_CREATED_AT_INDEX: CreatedAtIndex
+  S3_BUCKET: mys3bucket-khamma-1201-${self:provider.stage}
+  SIGNED_URL_EXPIRATION: 3600
+  TODOS_USER_INDEX: TodoUserIndex
+  PROJECT_NAME: Todo
+iam:
+  role:
+    statements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource:
+          - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+          - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - xray:PutTelemetryRecords
+          - xray:PutTraceSegments
+        Resource: '*'

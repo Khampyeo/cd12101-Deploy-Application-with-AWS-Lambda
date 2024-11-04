@@ -12,18 +12,18 @@ GetTodos:
         authorizer: Auth
   iamRoleStatements:
     - Effect: Allow
-        Action:
-          - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      Action:
+        - dynamodb:Query
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     - Effect: Allow
-        Action:
-          - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
+      Action:
+        - dynamodb:Query
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.TODOS_CREATED_AT_INDEX}
     - Effect: Allow
-        Action:
-          - xray:PutTelemetryRecords
-          - xray:PutTraceSegments
-        Resource: '*'
+      Action:
+        - xray:PutTelemetryRecords
+        - xray:PutTraceSegments
+      Resource: '*'
 # TODO: Configure this function
 CreateTodo:
   handler: src/lambda/http/createTodo.handler
@@ -37,15 +37,15 @@ CreateTodo:
           schemas:
             application/json: ${file(models/create-model.json)}
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-        Resource:
-          - '*'
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+      Resource:
+        - '*'
 # TODO: Configure this function
 UpdateTodo:
   handler: src/lambda/http/updateTodo.handler
@@ -59,15 +59,15 @@ UpdateTodo:
           schemas:
             application/json: ${file(models/update-model.json)}
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-        Resource:
-          - '*'
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+      Resource:
+        - '*'
 # TODO: Configure this function
 DeleteTodo:
   handler: src/lambda/http/deleteTodo.handler
@@ -78,16 +78,16 @@ DeleteTodo:
         cors: true
         authorizer: Auth
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:deleteItem
-        Resource:
-          - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-        Resource:
-          - '*'
+    - Effect: Allow
+      Action:
+        - dynamodb:deleteItem
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+      Resource:
+        - '*'
 # TODO: Configure this function
 GenerateUploadUrl:
   handler: src/lambda/http/generateUploadUrl.handler
@@ -98,17 +98,17 @@ GenerateUploadUrl:
         authorizer: Auth
         cors: true
   iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - s3:PutObject
-        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
-      - Effect: Allow
-        Action:
-          - dynamodb:updateItem
-        Resource:
-          - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-        Resource:
-          - '*'
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
+    - Effect: Allow
+      Action:
+        - dynamodb:updateItem
+      Resource:
+        - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+      Resource:
+        - '*'

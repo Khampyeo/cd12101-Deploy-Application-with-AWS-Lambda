@@ -8,9 +8,6 @@ const jwksUrl = 'https://dev-i04d5brxhm1zdum1.us.auth0.com/.well-known/jwks.json
 
 export async function handler(event) {
   try { 
-    console.log("auth: step 1");
-    console.log("Authorization Token:", event.authorizationToken);
-    
     const jwtToken = await verifyToken(event.authorizationToken)
 
     return {
@@ -46,16 +43,12 @@ export async function handler(event) {
 }
 
 async function verifyToken(authHeader) {
-  console.log("auth: step 2");
 
   const token = getToken(authHeader)
   const jwt = jsonwebtoken.decode(token, { complete: true })
-  console.log("auth: step 3");
 
   try {
-    console.log("auth: get jwks");
     const res = await axios.get(jwksUrl)
-    console.log("auth: step 4");
     
     const key = res?.data?.keys?.find((k) => k.kid === jwt.header.kid)
     if (!key) {
@@ -63,8 +56,6 @@ async function verifyToken(authHeader) {
     }
     const pem = key.x5c[0]
     const cert = `-----BEGIN CERTIFICATE-----\n${pem}\n-----END CERTIFICATE-----`
-    console.log(cert);
-    console.log("auth: step 5");
     return jsonwebtoken.verify(token, cert)
   } catch (error) {
     logger.error('Token verification failed', { error: JSON.stringify(error) });  }
@@ -73,7 +64,6 @@ async function verifyToken(authHeader) {
 }
 
 function getToken(authHeader) {
-  console.log("auth: getToken");
   if (!authHeader) throw new Error('No authentication header')
 
   if (!authHeader.toLowerCase().startsWith('bearer '))
